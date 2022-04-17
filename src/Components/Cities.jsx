@@ -55,6 +55,7 @@ export const Cities = () => {
           name="country"
           id=""
         >
+             <option>choose country</option>
           {country.map((el) => (
             <option key={nanoid()} value={el.name}>
               {el.name}
