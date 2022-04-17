@@ -57,3 +57,18 @@ export const addCityToDb = (city) => async (dispatch) => {
     dispatch(cityLoading(false));
   }
 };
+
+export const Editcitytodb = (city, id) => async (dispatch) => {
+  try {
+    dispatch(cityLoading(true));
+    await axios.patch(
+      `https://unit6-reactapp.herokuapp.com/cities/${id}`,
+      city
+    );
+    dispatch(cityLoading(false));
+    dispatch(getAllcity());
+  } catch (err) {
+    console.log(err.message);
+    dispatch(cityLoading(false));
+  }
+};

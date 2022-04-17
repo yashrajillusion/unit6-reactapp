@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { addcity, deleteCity, getAllcity } from "../Redux/Cities/action";
 import { getAllCountry } from "../Redux/Country/action";
 import Skeleton from "@mui/material/Skeleton";
+import { Link } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 export const Table = () => {
   const { city, loading, error } = useSelector((store) => store.city);
   const { country } = useSelector((store) => store.country);
-  const [editel, setedit] = useState({});
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllcity());
@@ -28,9 +30,7 @@ export const Table = () => {
     let arr = city.filter((el) => el.country === e.target.value);
     dispatch(addcity([...arr]));
   };
-  const handleEdit = (obj) => {
-    setedit({ ...obj });
-  };
+
   if (loading) {
     return <Animations />;
     //  <CircularProgress className="spinner" />;
@@ -81,13 +81,15 @@ export const Table = () => {
                 <td>{country}</td>
                 <td>{city}</td>
                 <td>{population}</td>
+
                 <td
                   onClick={() => {
-                    handleEdit({ id, country, city, population });
+                    navigate(`cities/${id}`);
                   }}
                 >
                   Edit
                 </td>
+
                 <td
                   onClick={() => {
                     handleDelete(id);
@@ -100,7 +102,6 @@ export const Table = () => {
           </tbody>
         )}
       </table>
-      <Edit el={editel} country={country} />
     </>
   );
 };
@@ -120,45 +121,3 @@ export default function Animations() {
 }
 // npm install @mui/material @emotion/react @emotion/styled
 // id	Country	City	Population	Edit	Delete
-const Edit = ({ country, el }) => {
-  const dispatch = useDispatch();
-  const [city, setCity] = useState(el);
-  console.log(city);
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCity({ ...city, [name]: value });
-  };
-  const editCountries = async (e) => {
-    e.preventDefault();
-    // dispatch(addCityToDb(city));
-  };
-  return (
-    <form style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
-      <label>New Cities</label>
-      <input
-        onChange={handleChange}
-        value={city.city}
-        type="text"
-        name="city"
-        placeholder="...add new Cities"
-      />
-      <input
-        onChange={handleChange}
-        value={city.population}
-        type="number"
-        name="population"
-        placeholder="...add population"
-      />
-      <select onChange={handleChange} value={city.country} name="country" id="">
-        {country.map((el) => (
-          <option key={nanoid()} value={el.name}>
-            {el.name}
-          </option>
-        ))}
-      </select>
-      <button type="submit" onClick={editCountries}>
-        Add
-      </button>
-    </form>
-  );
-};
